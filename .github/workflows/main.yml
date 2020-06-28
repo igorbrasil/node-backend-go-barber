@@ -44,6 +44,11 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         source: ".,!node_modules"
         target: "~/app/node-backend-go-barber"
+  
+    - name: select node
+      uses: dcodeIO/setup-node-nvm@master
+      with:
+         node-version: lts/*
         
     - name: Run production scripts
       uses: appleboy/ssh-action@master
