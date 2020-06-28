@@ -45,11 +45,7 @@ jobs:
         source: ".,!node_modules"
         target: "~/app/node-backend-go-barber"
   
-    - name: select node
-      uses: dcodeIO/setup-node-nvm@master
-      with:
-         node-version: lts/*
-        
+         
     - name: Run production scripts
       uses: appleboy/ssh-action@master
       with:
@@ -59,6 +55,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           cd ~/app/node-backend-go-barber 
+          nvm current 12.8.1
           yarn
           ./node_modules/.bin/typeorm migration:run
           pm2 restart gobarber-api
