@@ -16,6 +16,15 @@ jobs:
       with:
         node-version: 12.x
     
+        # cach
+    - name: Cache multiple paths
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/cache
+          !~/cache/exclude
+          **/node_modules
+      key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
     # Instalar as dependências NPM/Yarn
     - name: Install dependencies
       run: yarn
@@ -31,7 +40,7 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         port: ${{ secrets.SSH_PORT }}
         key: ${{ secrets.SSH_KEY }}
-        source: "."
+        source: ".,!node_modules"
         target: "~/app/node-backend-go-barber"
     
     # Copiar pasta dist pra dentro da Digital Ocean
