@@ -54,8 +54,7 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          cd ~/app/node-backend-go-barber 
-          nvm current 12.8.1
+          cd ~/app/node-backend-go-barber         
           yarn
           ./node_modules/.bin/typeorm migration:run
           pm2 restart gobarber-api
