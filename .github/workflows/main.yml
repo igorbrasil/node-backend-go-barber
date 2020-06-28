@@ -33,7 +33,8 @@ jobs:
     # Executar a build
     - name: Run build
       run: yarn build
-
+    # Copiar pasta dist pra dentro da Digital Ocean 
+    # Substituir o código existente na pasta "dist" pelo novo código
     - name: Copy dist to Digital Ocean
       uses: appleboy/scp-action@master
       with:
@@ -44,9 +45,36 @@ jobs:
         source: ".,!node_modules"
         target: "~/app/node-backend-go-barber"
     
-    # Copiar pasta dist pra dentro da Digital Ocean
-      
-    # Substituir o código existente na pasta "dist" pelo novo código
+
+
     # Executar "yarn" na Digital Ocean
-    # Executar as migrations do TypeORM
+    - name: Install depencies on server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+            cd ~/app/node-backend-go-barber 
+            yarn
+   # Executar as migrations do TypeORM    
+    - name: Run Migrations on server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+            cd ~/app/node-backend-go-barber 
+            ./node_modules/.bin/typeorm mitration:run
+
+
     # Restart no servidor Node.js
+        # Executar as migrations do TypeORM    
+    - name: Restart node server 
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        script: pm2 restart gobarber-api 
